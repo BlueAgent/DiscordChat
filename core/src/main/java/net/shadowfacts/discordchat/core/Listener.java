@@ -32,7 +32,7 @@ public class Listener extends ListenerAdapter {
 
 	@Override
 	public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
-		String raw = event.getMessage().getRawContent();
+		String raw = event.getMessage().getContentRaw();
 		if (raw.startsWith(config.getCommandPrefix())) {
 			commandManager.execute(raw.substring(config.getCommandPrefix().length()), event.getAuthor(), event.getChannel());
 		}
@@ -44,14 +44,14 @@ public class Listener extends ListenerAdapter {
 		if (event.getGuild().getIdLong() != config.getServerID()) return;
 		if (!config.getChannelIDs().contains(event.getChannel().getIdLong())) return;
 
-		String raw = event.getMessage().getRawContent();
+		String raw = event.getMessage().getContentRaw();
 		if (raw.startsWith(config.getCommandPrefix())) {
 			commandManager.execute(raw.substring(config.getCommandPrefix().length()), event.getAuthor(), event.getChannel());
 		} else {
 			String channel = event.getChannel().getName();
 			String color = event.getMember().getColor() == null ? config.getDefaultColor() : NearestMCColor.get(event.getMember().getColor().getRGB());
 			String author = event.getMember().getEffectiveName().replaceAll("\\.", "_");
-			String message = EmojiParser.parseToAliases(event.getMessage().getContent());
+			String message = EmojiParser.parseToAliases(event.getMessage().getContentDisplay());
 			minecraftAdapter.sendMessage(formatter.fromDiscord(channel, color, author, message));
 			event.getMessage().getAttachments().forEach(it -> {
 				minecraftAdapter.sendMessage("Attachment: " + it.getUrl());
